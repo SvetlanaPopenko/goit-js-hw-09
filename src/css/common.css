@@ -32,7 +32,8 @@ img {
   gap: 10px;
 }
 
-.value, .label{
+.value,
+.label {
   color: rgb(7, 196, 7);
   font-size: 30px;
   font-weight: bolder;
