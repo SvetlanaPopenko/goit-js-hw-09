@@ -3,6 +3,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 let setTimeId = null;
+let differ = null;
 
 const inputDateTime = document.querySelector('#datetime-picker');
 const btnStart = document.querySelector('button[data-start]');
@@ -11,34 +12,41 @@ const dataDays = document.querySelector('[data-days]');
 const dataHours = document.querySelector('[data-hours]');
 const dataMinutes = document.querySelector('[data-minutes]');
 const dataSeconds = document.querySelector('[data-seconds]');
-console.log(dataDays);
-console.log(dataHours);
-console.log(dataMinutes);
 
 inputDateTime.addEventListener('click', onInputDateTime);
 
 function onInputDateTime() {
-  Notify.success(
-  'Click Me', {
+  Notify.success('Click Me', {
     timeout: 6000,
-  },
-);
+  });
+
+   const setTimeId = setInterval(() => {
+    if (differ > 0) {
+      const { days, hours, minutes, seconds } = convertMs(differ);
+
+      dataDays.textContent = `${days}`;
+      dataHours.textContent = `${hours}`;
+      dataMinutes.textContent = `${minutes}`;
+      dataSeconds.textContent = `${seconds}`;
+    } if (differ <= 0) {
+      clearInterval(setTimeId);
+    }
+  }, 1000);
+  inputDateTime.disabled = true;
+  btnStart.disabled = true;
 }
-const options = {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-  onClose(selectedDates) {
+
+ const options = {
+    enableTime: true,
+    time_24hr: true,
+    defaultDate: new Date(),
+    minuteIncrement: 1,
+    onClose(selectedDates) {
       console.log(selectedDates[0]);
-      },
+    },
 };
-
-setTimeId = setInterval(() => {
-  const currentTime = Date.now();
-
-})
-flatpickr(inputDateTime, options);
+  
+const timer =flatpickr(inputDateTime, options);
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
