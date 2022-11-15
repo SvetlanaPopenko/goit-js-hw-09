@@ -6,15 +6,14 @@ const btnStart = document.querySelector('[data-start]');
 const btnStop = document.querySelector('[data-stop]');
 const body = document.querySelector('body');
 
-let randomHexColor = null;
-let isActive = true;
+let timerIdisActive = true;
 
 btnStart.addEventListener('click', onBtnStart);
 btnStop.addEventListener('click', onBtnStop);
 
 function onBtnStart() {
   if (isActive) {
-    randomHexColor = setInterval(() => {
+    timerId = setInterval(() => {
       body.style.backgroundColor = `${getRandomHexColor()}`;
     }, 700);
     btnStart.setAttribute('disabled', true);
@@ -23,7 +22,7 @@ function onBtnStart() {
 }
 
 function onBtnStop() {
-  clearInterval(randomHexColor);
+  clearInterval(timerId);
   if (!isActive) {
     btnStart.removeAttribute('disabled', true);
   }
