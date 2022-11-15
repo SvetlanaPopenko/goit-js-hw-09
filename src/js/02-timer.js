@@ -2,8 +2,8 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-let setTimeId = null;
-let differ = null;
+let setTimerId = null;
+let deltaTime = null;
 
 const inputDateTime = document.querySelector('#datetime-picker');
 const btnStart = document.querySelector('button[data-start]');
@@ -13,39 +13,53 @@ const dataHours = document.querySelector('[data-hours]');
 const dataMinutes = document.querySelector('[data-minutes]');
 const dataSeconds = document.querySelector('[data-seconds]');
 
-inputDateTime.addEventListener('click', onInputDateTime);
+btnStart.addEventListener('click', onBtnClickTimer);
 
-function onInputDateTime() {
+function onBtnClickTimer() {
   Notify.success('Click Me', {
-    timeout: 6000,
+    timeout: 4000,
   });
 
-   const setTimeId = setInterval(() => {
-    if (differ > 0) {
-      const { days, hours, minutes, seconds } = convertMs(differ);
+   setTimerId = setInterval(() => {
+    if (deltaTime > 0) {
+      const { days, hours, minutes, seconds } = convertMs(deltaTime);
 
       dataDays.textContent = `${days}`;
       dataHours.textContent = `${hours}`;
       dataMinutes.textContent = `${minutes}`;
       dataSeconds.textContent = `${seconds}`;
-    } if (differ <= 0) {
-      clearInterval(setTimeId);
+    } if (deltaTime <= 0) {
+      clearInterval(setTimerId);
     }
   }, 1000);
   inputDateTime.disabled = true;
   btnStart.disabled = true;
 }
 
- const options = {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose(selectedDates) {
-      console.log(selectedDates[0]);
-    },
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    clearInterval(setTimerId);
+    const setId = setInterval(() => {
+      deltaTime = selectedDates[0].getTime() - new Date().getTime();
+      if (deltaTime <= 0) {
+        clearInterval(setId);
+        Notify.failure('Please choose a date in the future', {
+          timeout: 4000,
+        });
+        btnStart.disabled = true;
+        return;
+      }
+    }, 1000);
+    btnStart.disabled = false;
+  },
 };
   
+btnStart.disabled = true;
+
 const timer =flatpickr(inputDateTime, options);
 
 function addLeadingZero(value) {
@@ -60,13 +74,13 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = addLeadingZero(Math.floor(ms / day));
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
 }
