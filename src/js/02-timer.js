@@ -20,7 +20,7 @@ function onBtnClickTimer() {
     timeout: 4000,
   });
 
-   setTimerId = setInterval(() => {
+  setTimerId = setInterval(() => {
     if (deltaTime > 0) {
       const { days, hours, minutes, seconds } = convertMs(deltaTime);
 
@@ -28,7 +28,8 @@ function onBtnClickTimer() {
       dataHours.textContent = `${hours}`;
       dataMinutes.textContent = `${minutes}`;
       dataSeconds.textContent = `${seconds}`;
-    } if (deltaTime <= 0) {
+    }
+    if (deltaTime <= 0) {
       clearInterval(setTimerId);
     }
   }, 1000);
@@ -57,10 +58,10 @@ const options = {
     btnStart.disabled = false;
   },
 };
-  
+
 btnStart.disabled = true;
 
-const timer =flatpickr(inputDateTime, options);
+const timer = flatpickr(inputDateTime, options);
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
@@ -80,7 +81,9 @@ function convertMs(ms) {
   // Remaining minutes
   const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+  const seconds = addLeadingZero(
+    Math.floor((((ms % day) % hour) % minute) / second)
+  );
 
   return { days, hours, minutes, seconds };
 }
