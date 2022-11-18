@@ -9,18 +9,23 @@ function onSubmit(evt) {
 
   const { delay, amount, step } = evt.target.elements;
 
-  for (let i = 0; i < amount.value; i += 1) {
-    createPromise(i, Number(delay.value))
-  .then(({ position, delay }) => {
-    Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`,{timeout:1000,});
-  })
-  .catch(({ position, delay }) => {
-    Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`,{timeout:1000});
-  });
-    Number(delay.value) += Number(step.value);
-  }
-  evt.target(reset);
+  let delayValue = Number(delay.value);
 
+  for (let i = 0; i < amount.value; i += 1) {
+    createPromise(i, delayValue)
+      .then(({ position, delay }) => {
+        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`, {
+          timeout: 1000,
+        });
+      })
+      .catch(({ position, delay }) => {
+        Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`, {
+          timeout: 1000,
+        });
+      });
+    delayValue += Number(step.value);
+  }
+  evt.target.reset();
 }
 
 function createPromise(position, delay) {
@@ -29,9 +34,9 @@ function createPromise(position, delay) {
     setTimeout(() => {
       if (shouldResolve) {
         resolve({ position, delay });
-  } else {
+      } else {
         reject({ position, delay });
-  }
+      }
     }, delay);
-    })
-  }
+  });
+}
