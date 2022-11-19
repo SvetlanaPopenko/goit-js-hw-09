@@ -11,7 +11,7 @@ function onSubmit(evt) {
 
   let delayValue = Number(delay.value);
 
-  for (let i = 0; i < amount.value; i += 1) {
+  for (let i = 1; i < amount.value; i += 1) {
     createPromise(i, delayValue)
       .then(({ position, delay }) => {
         Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`, {
