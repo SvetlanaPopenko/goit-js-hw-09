@@ -11,15 +11,15 @@ function onSubmit(evt) {
 
   let delayValue = Number(delay.value);
 
-  for (let i = 1; i < amount.value; i += 1) {
+  for (let i = 0; i < amount.value; i += 1) {
     createPromise(i, delayValue)
       .then(({ position, delay }) => {
-        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`, {
+        Notify.success(`✅ Fulfilled promise ${position + 1} in ${delay}ms`, {
           timeout: 1000,
         });
       })
       .catch(({ position, delay }) => {
-        Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`, {
+        Notify.failure(`❌ Rejected promise ${position + 1} in ${delay}ms`, {
           timeout: 1000,
         });
       });
